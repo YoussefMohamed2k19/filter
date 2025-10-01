@@ -1,0 +1,16 @@
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0c8596;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a3216e;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="30" r="28" fill="white" stroke="#0c8596" stroke-width="3"/>
+  
+  <!-- Text -->
+  <text x="100" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#0c8596">It Takes a</text>
+  <text x="100" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#a3216e">Community</text>
+  <text x="100" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#0c8596">to drive Change</text>
+</svg>
