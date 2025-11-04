@@ -136,14 +136,22 @@ function App() {
     }
 
     // Draw video frame
-    // Note: CSS transform on video is only for preview, canvas captures original stream
+    // Mirror the image horizontally to match the preview (selfie style)
+    ctx.save()
+    ctx.translate(canvas.width, 0)
+    ctx.scale(-1, 1)
+    
     try {
-      ctx.drawImage(video, drawX, drawY, drawWidth, drawHeight)
+      // Draw mirrored (negative x to account for the flip)
+      ctx.drawImage(video, -drawX - drawWidth, drawY, drawWidth, drawHeight)
     } catch (error) {
       console.error('Error drawing video:', error)
+      ctx.restore()
       alert('Error capturing video. Please try again.')
       return
     }
+    
+    ctx.restore()
 
     // Create frame image and overlay it
     const frameImg = new Image()
