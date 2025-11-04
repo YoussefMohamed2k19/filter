@@ -22,13 +22,13 @@ function App() {
         throw new Error('Camera API not supported in this browser')
       }
 
-      // Use simple constraints to avoid zooming in on mobile
-      // Don't force high resolution which causes cameras to zoom
+      // Use minimal constraints to avoid zooming in on mobile
+      // Only request front-facing camera - let it use natural field of view
+      // Don't request aspect ratio or resolution as these cause digital zoom
       const constraints = {
         video: { 
-          facingMode: 'user',
-          // Request portrait orientation but let camera choose resolution
-          aspectRatio: { ideal: 9/16 }
+          facingMode: 'user'
+          // No aspect ratio or resolution constraints to prevent zoom
         }
       }
       
@@ -91,29 +91,15 @@ function App() {
   }
 
   const captureSelfie = () => {
-    if (!videoRef.current || !canvasRef.current) {
-      console.error('Video or canvas not available')
-      return
-    }
+    if (!videoRef.current || !canvasRef.current) return
 
     const video = videoRef.current
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
 
-    // Check if video is ready
-    if (!video.videoWidth || !video.videoHeight) {
-      console.error('Video not ready:', video.videoWidth, video.videoHeight)
-      alert('Video not ready. Please wait a moment and try again.')
-      return
-    }
-
     // Set canvas to target size (1080x1920)
     canvas.width = 1080
     canvas.height = 1920
-
-    // Clear canvas
-    ctx.fillStyle = '#000000'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // Calculate aspect ratio to fit video into canvas
     const videoAspect = video.videoWidth / video.videoHeight
@@ -136,58 +122,21 @@ function App() {
     }
 
     // Draw video frame
-    // Mirror the image horizontally to match the preview (selfie style)
-    ctx.save()
-    ctx.translate(canvas.width, 0)
-    ctx.scale(-1, 1)
-    
-    try {
-      // Draw mirrored (negative x to account for the flip)
-      ctx.drawImage(video, -drawX - drawWidth, drawY, drawWidth, drawHeight)
-    } catch (error) {
-      console.error('Error drawing video:', error)
-      ctx.restore()
-      alert('Error capturing video. Please try again.')
-      return
-    }
-    
-    ctx.restore()
+    // Note: CSS transform on video is only for preview, canvas captures original stream
+    ctx.drawImage(video, drawX, drawY, drawWidth, drawHeight)
 
     // Create frame image and overlay it
     const frameImg = new Image()
     frameImg.crossOrigin = 'anonymous'
-    
     frameImg.onload = () => {
-      try {
-        // Draw frame overlay covering the entire canvas
-        ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height)
-        
-        // Convert to image data URL
-        const imageDataUrl = canvas.toDataURL('image/png')
-        if (imageDataUrl) {
-          setCapturedImage(imageDataUrl)
-          stopCamera()
-        } else {
-          throw new Error('Failed to create image data URL')
-        }
-      } catch (error) {
-        console.error('Error processing frame:', error)
-        alert('Error processing image. Please try again.')
-      }
-    }
-    
-    frameImg.onerror = (error) => {
-      console.error('Error loading frame image:', error)
-      // Still save the image without frame if frame fails to load
+      // Draw frame overlay covering the entire canvas
+      ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height)
+      
+      // Convert to image data URL
       const imageDataUrl = canvas.toDataURL('image/png')
-      if (imageDataUrl) {
-        setCapturedImage(imageDataUrl)
-        stopCamera()
-      } else {
-        alert('Error loading frame image. Please try again.')
-      }
+      setCapturedImage(imageDataUrl)
+      stopCamera()
     }
-    
     frameImg.src = '/frame.png'
   }
 
@@ -275,7 +224,7 @@ function App() {
                     autoPlay
                     playsInline
                     muted
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     style={{ transform: 'scaleX(-1)' }}
                   />
                   {/* Frame guide overlay */}
