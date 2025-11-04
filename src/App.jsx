@@ -31,25 +31,35 @@ function App() {
       streamRef.current = stream
       
       if (videoRef.current) {
-        videoRef.current.srcObject = stream
+        const video = videoRef.current
+        video.srcObject = stream
         
-        // Wait for video to be ready
-        await new Promise((resolve, reject) => {
-          if (videoRef.current) {
-            videoRef.current.onloadedmetadata = () => {
-              videoRef.current?.play()
-                .then(() => {
-                  setIsCameraOpen(true)
-                  setIsLoadingCamera(false)
-                  resolve()
-                })
-                .catch(reject)
-            }
-            videoRef.current.onerror = reject
-          } else {
-            reject(new Error('Video element not available'))
-          }
-        })
+        // Set up a simple handler to show camera once video starts playing
+        const handleCanPlay = () => {
+          setIsCameraOpen(true)
+          setIsLoadingCamera(false)
+          video.removeEventListener('canplay', handleCanPlay)
+        }
+        
+        // Try to play immediately
+        video.play()
+          .then(() => {
+            setIsCameraOpen(true)
+            setIsLoadingCamera(false)
+          })
+          .catch((playError) => {
+            // If play fails, wait for canplay event
+            console.warn('Initial play failed, waiting for video to be ready:', playError)
+            video.addEventListener('canplay', handleCanPlay, { once: true })
+            
+            // Fallback: show camera after 1 second regardless
+            setTimeout(() => {
+              setIsLoadingCamera(false)
+              setIsCameraOpen(true)
+            }, 1000)
+          })
+      } else {
+        throw new Error('Video element not available')
       }
     } catch (error) {
       console.error('Error accessing camera:', error)
