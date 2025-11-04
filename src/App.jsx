@@ -122,11 +122,13 @@ function App() {
     }
 
     // Draw video frame - mirror it horizontally to match the preview
-    // The preview shows mirrored video, so we need to mirror the capture too
+    // The preview shows mirrored video (scaleX(-1)), so we mirror the capture too
     ctx.save()
+    // Flip horizontally: translate to right edge, then scale -1 on X axis
     ctx.translate(canvas.width, 0)
     ctx.scale(-1, 1)
-    ctx.drawImage(video, -drawX - drawWidth, drawY, drawWidth, drawHeight)
+    // Draw the image at the flipped position
+    ctx.drawImage(video, drawX - canvas.width, drawY, drawWidth, drawHeight)
     ctx.restore()
 
     // Create frame image and overlay it
