@@ -22,13 +22,17 @@ function App() {
         throw new Error('Camera API not supported in this browser')
       }
 
-      const stream = await navigator.mediaDevices.getUserMedia({
+      // Use simple constraints to avoid zooming in on mobile
+      // Don't force high resolution which causes cameras to zoom
+      const constraints = {
         video: { 
           facingMode: 'user',
-          width: { ideal: 1080 },
-          height: { ideal: 1920 }
+          // Request portrait orientation but let camera choose resolution
+          aspectRatio: { ideal: 9/16 }
         }
-      })
+      }
+      
+      const stream = await navigator.mediaDevices.getUserMedia(constraints)
       
       streamRef.current = stream
       setStreamReady(true)
