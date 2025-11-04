@@ -121,9 +121,13 @@ function App() {
       drawY = (canvas.height - drawHeight) / 2
     }
 
-    // Draw video frame
-    // Note: CSS transform on video is only for preview, canvas captures original stream
-    ctx.drawImage(video, drawX, drawY, drawWidth, drawHeight)
+    // Draw video frame - mirror it horizontally to match the preview
+    // The preview shows mirrored video, so we need to mirror the capture too
+    ctx.save()
+    ctx.translate(canvas.width, 0)
+    ctx.scale(-1, 1)
+    ctx.drawImage(video, -drawX - drawWidth, drawY, drawWidth, drawHeight)
+    ctx.restore()
 
     // Create frame image and overlay it
     const frameImg = new Image()
