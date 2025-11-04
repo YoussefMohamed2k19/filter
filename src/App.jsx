@@ -6,6 +6,7 @@ function App() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [isLoadingCamera, setIsLoadingCamera] = useState(false)
   const [error, setError] = useState(null)
+  const [streamReady, setStreamReady] = useState(false)
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
@@ -13,6 +14,7 @@ function App() {
   const startCamera = async () => {
     setIsLoadingCamera(true)
     setError(null)
+    setIsCameraOpen(true) // Show video element first
     
     try {
       // Check if getUserMedia is available
@@ -29,41 +31,12 @@ function App() {
       })
       
       streamRef.current = stream
+      setStreamReady(true)
       
-      if (videoRef.current) {
-        const video = videoRef.current
-        video.srcObject = stream
-        
-        // Set up a simple handler to show camera once video starts playing
-        const handleCanPlay = () => {
-          setIsCameraOpen(true)
-          setIsLoadingCamera(false)
-          video.removeEventListener('canplay', handleCanPlay)
-        }
-        
-        // Try to play immediately
-        video.play()
-          .then(() => {
-            setIsCameraOpen(true)
-            setIsLoadingCamera(false)
-          })
-          .catch((playError) => {
-            // If play fails, wait for canplay event
-            console.warn('Initial play failed, waiting for video to be ready:', playError)
-            video.addEventListener('canplay', handleCanPlay, { once: true })
-            
-            // Fallback: show camera after 1 second regardless
-            setTimeout(() => {
-              setIsLoadingCamera(false)
-              setIsCameraOpen(true)
-            }, 1000)
-          })
-      } else {
-        throw new Error('Video element not available')
-      }
     } catch (error) {
       console.error('Error accessing camera:', error)
       setIsLoadingCamera(false)
+      setIsCameraOpen(false)
       setError(error.message || 'Unable to access camera. Please check permissions and ensure you are using HTTPS or localhost.')
       
       // Stop any existing stream
@@ -74,6 +47,33 @@ function App() {
     }
   }
 
+  // Effect to handle video stream when ready
+  useEffect(() => {
+    if (streamReady && streamRef.current && videoRef.current) {
+      const video = videoRef.current
+      video.srcObject = streamRef.current
+      
+      // Try to play immediately
+      video.play()
+        .then(() => {
+          setIsLoadingCamera(false)
+        })
+        .catch((playError) => {
+          console.warn('Initial play failed, waiting for video to be ready:', playError)
+          const handleCanPlay = () => {
+            setIsLoadingCamera(false)
+            video.removeEventListener('canplay', handleCanPlay)
+          }
+          video.addEventListener('canplay', handleCanPlay, { once: true })
+          
+          // Fallback: stop loading after 1 second regardless
+          setTimeout(() => {
+            setIsLoadingCamera(false)
+          }, 1000)
+        })
+    }
+  }, [streamReady])
+
   const stopCamera = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop())
@@ -83,6 +83,7 @@ function App() {
       videoRef.current.srcObject = null
     }
     setIsCameraOpen(false)
+    setStreamReady(false)
   }
 
   const captureSelfie = () => {
