@@ -204,7 +204,7 @@ function App() {
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#87a5ca' }}>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2" style={{ color: '#ffffff' }}>World Diabetes day</h1>
+          <h1 className="text-4xl font-bold mb-2" style={{ color: '#ffffff' }}>World Diabetes Day</h1>
           <p style={{ color: '#ffffff' }}>Take a selfie with our frame</p>
         </div>
 
