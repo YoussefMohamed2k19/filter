@@ -175,7 +175,7 @@ function App() {
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.download = `marketing-campaign-${Date.now()}.png`
+        link.download = `world-diabetes-day-${Date.now()}.png`
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
@@ -195,11 +195,11 @@ function App() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#87a5ca' }}>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Marketing Campaign</h1>
-          <p className="text-gray-600">Take a selfie with our frame</p>
+          <h1 className="text-4xl font-bold mb-2" style={{ color: '#ffffff' }}>World Diabetes day</h1>
+          <p style={{ color: '#ffffff' }}>Take a selfie with our frame</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -239,7 +239,10 @@ function App() {
                   <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4 px-4 z-20">
                     <button
                       onClick={stopCamera}
-                      className="px-6 py-3 bg-gray-800 bg-opacity-80 backdrop-blur-sm text-white rounded-full font-semibold hover:bg-opacity-100 transition-all duration-200 shadow-lg hover:shadow-xl"
+                      className="px-6 py-3 backdrop-blur-sm text-white rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+                      style={{ backgroundColor: 'rgba(135, 165, 202, 0.8)' }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(135, 165, 202, 1)'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(135, 165, 202, 0.8)'}
                     >
                       Cancel
                     </button>
@@ -256,22 +259,25 @@ function App() {
                   <div className="text-center p-8 w-full">
                     {error ? (
                       <div className="mb-6">
-                        <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <svg className="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#cd473f' }}>
+                          <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
-                        <p className="text-red-600 text-sm mb-4 px-4">{error}</p>
+                        <p className="text-sm mb-4 px-4" style={{ color: '#cd473f' }}>{error}</p>
                         <button
                           onClick={startCamera}
-                          className="px-6 py-3 bg-gray-600 text-white rounded-full font-semibold hover:bg-gray-700 transition-all duration-200 shadow-lg"
+                          className="px-6 py-3 text-white rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+                          style={{ backgroundColor: '#cd473f' }}
+                          onMouseEnter={(e) => e.target.style.opacity = '0.9'}
+                          onMouseLeave={(e) => e.target.style.opacity = '1'}
                         >
                           Try Again
                         </button>
                       </div>
                     ) : (
                       <>
-                        <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg" style={{ backgroundColor: '#cd473f' }}>
                           {isLoadingCamera ? (
                             <svg className="animate-spin h-12 w-12 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -287,7 +293,10 @@ function App() {
                         <button
                           onClick={startCamera}
                           disabled={isLoadingCamera}
-                          className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold text-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                          className="px-8 py-4 text-white rounded-full font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                          style={{ backgroundColor: '#cd473f' }}
+                          onMouseEnter={(e) => !e.target.disabled && (e.target.style.opacity = '0.9')}
+                          onMouseLeave={(e) => e.target.style.opacity = '1'}
                         >
                           {isLoadingCamera ? 'Opening Camera...' : 'Open Camera'}
                         </button>
@@ -312,14 +321,20 @@ function App() {
               <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4 px-4">
                 <button
                   onClick={retakePhoto}
-                  className="px-6 py-3 bg-gray-600 text-white rounded-full font-semibold hover:bg-gray-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="px-6 py-3 text-white rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+                  style={{ backgroundColor: '#87a5ca' }}
+                  onMouseEnter={(e) => e.target.style.opacity = '0.9'}
+                  onMouseLeave={(e) => e.target.style.opacity = '1'}
                 >
                   Retake
                 </button>
                 <button
                   onClick={downloadImage}
                   disabled={isProcessing}
-                  className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-6 py-3 text-white rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  style={{ backgroundColor: '#cd473f' }}
+                  onMouseEnter={(e) => !e.target.disabled && (e.target.style.opacity = '0.9')}
+                  onMouseLeave={(e) => e.target.style.opacity = '1'}
                 >
                   {isProcessing ? (
                     <>
