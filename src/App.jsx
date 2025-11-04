@@ -91,15 +91,29 @@ function App() {
   }
 
   const captureSelfie = () => {
-    if (!videoRef.current || !canvasRef.current) return
+    if (!videoRef.current || !canvasRef.current) {
+      console.error('Video or canvas not available')
+      return
+    }
 
     const video = videoRef.current
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
 
+    // Check if video is ready
+    if (!video.videoWidth || !video.videoHeight) {
+      console.error('Video not ready:', video.videoWidth, video.videoHeight)
+      alert('Video not ready. Please wait a moment and try again.')
+      return
+    }
+
     // Set canvas to target size (1080x1920)
     canvas.width = 1080
     canvas.height = 1920
+
+    // Clear canvas
+    ctx.fillStyle = '#000000'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // Calculate aspect ratio to fit video into canvas
     const videoAspect = video.videoWidth / video.videoHeight
@@ -123,20 +137,49 @@ function App() {
 
     // Draw video frame
     // Note: CSS transform on video is only for preview, canvas captures original stream
-    ctx.drawImage(video, drawX, drawY, drawWidth, drawHeight)
+    try {
+      ctx.drawImage(video, drawX, drawY, drawWidth, drawHeight)
+    } catch (error) {
+      console.error('Error drawing video:', error)
+      alert('Error capturing video. Please try again.')
+      return
+    }
 
     // Create frame image and overlay it
     const frameImg = new Image()
     frameImg.crossOrigin = 'anonymous'
+    
     frameImg.onload = () => {
-      // Draw frame overlay covering the entire canvas
-      ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height)
-      
-      // Convert to image data URL
-      const imageDataUrl = canvas.toDataURL('image/png')
-      setCapturedImage(imageDataUrl)
-      stopCamera()
+      try {
+        // Draw frame overlay covering the entire canvas
+        ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height)
+        
+        // Convert to image data URL
+        const imageDataUrl = canvas.toDataURL('image/png')
+        if (imageDataUrl) {
+          setCapturedImage(imageDataUrl)
+          stopCamera()
+        } else {
+          throw new Error('Failed to create image data URL')
+        }
+      } catch (error) {
+        console.error('Error processing frame:', error)
+        alert('Error processing image. Please try again.')
+      }
     }
+    
+    frameImg.onerror = (error) => {
+      console.error('Error loading frame image:', error)
+      // Still save the image without frame if frame fails to load
+      const imageDataUrl = canvas.toDataURL('image/png')
+      if (imageDataUrl) {
+        setCapturedImage(imageDataUrl)
+        stopCamera()
+      } else {
+        alert('Error loading frame image. Please try again.')
+      }
+    }
+    
     frameImg.src = '/frame.png'
   }
 
