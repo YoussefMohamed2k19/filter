@@ -7,11 +7,12 @@ function App() {
   const [isLoadingCamera, setIsLoadingCamera] = useState(false)
   const [error, setError] = useState(null)
   const [streamReady, setStreamReady] = useState(false)
+  const [facingMode, setFacingMode] = useState('user') // 'user' for front, 'environment' for back
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
 
-  const startCamera = async () => {
+  const startCamera = async (facing = facingMode) => {
     setIsLoadingCamera(true)
     setError(null)
     setIsCameraOpen(true) // Show video element first
@@ -23,11 +24,11 @@ function App() {
       }
 
       // Use minimal constraints to avoid zooming in on mobile
-      // Only request front-facing camera - let it use natural field of view
+      // Let it use natural field of view
       // Don't request aspect ratio or resolution as these cause digital zoom
       const constraints = {
         video: { 
-          facingMode: 'user'
+          facingMode: facing
           // No aspect ratio or resolution constraints to prevent zoom
         }
       }
@@ -90,6 +91,25 @@ function App() {
     setStreamReady(false)
   }
 
+  const switchCamera = async () => {
+    // Stop current stream
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop())
+      streamRef.current = null
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null
+    }
+    setStreamReady(false)
+    
+    // Switch facing mode
+    const newFacingMode = facingMode === 'user' ? 'environment' : 'user'
+    setFacingMode(newFacingMode)
+    
+    // Start camera with new facing mode
+    await startCamera(newFacingMode)
+  }
+
   const captureSelfie = () => {
     if (!videoRef.current || !canvasRef.current) return
 
@@ -121,15 +141,20 @@ function App() {
       drawY = (canvas.height - drawHeight) / 2
     }
 
-    // Draw video frame - mirror it horizontally to match the preview
-    // The preview shows mirrored video (scaleX(-1)), so we mirror the capture too
-    // Method: flip the context, draw, then restore
-    ctx.save()
-    ctx.translate(canvas.width, 0)
-    ctx.scale(-1, 1)
-    // Draw at flipped position: original drawX becomes canvas.width - drawX - drawWidth
-    ctx.drawImage(video, canvas.width - drawX - drawWidth, drawY, drawWidth, drawHeight)
-    ctx.restore()
+    // Draw video frame - mirror it horizontally only for front camera to match the preview
+    // The preview shows mirrored video (scaleX(-1)) for front camera, so we mirror the capture too
+    if (facingMode === 'user') {
+      // Method: flip the context, draw, then restore
+      ctx.save()
+      ctx.translate(canvas.width, 0)
+      ctx.scale(-1, 1)
+      // Draw at flipped position: original drawX becomes canvas.width - drawX - drawWidth
+      ctx.drawImage(video, canvas.width - drawX - drawWidth, drawY, drawWidth, drawHeight)
+      ctx.restore()
+    } else {
+      // Back camera - no mirroring needed
+      ctx.drawImage(video, drawX, drawY, drawWidth, drawHeight)
+    }
 
     // Create frame image and overlay it
     const frameImg = new Image()
@@ -231,7 +256,7 @@ function App() {
                     playsInline
                     muted
                     className="w-full h-full object-contain"
-                    style={{ transform: 'scaleX(-1)' }}
+                    style={{ transform: facingMode === 'user' ? 'scaleX(-1)' : 'none' }}
                   />
                   {/* Frame guide overlay */}
                   <div className="absolute inset-0 pointer-events-none">
@@ -257,6 +282,19 @@ function App() {
                       className="w-16 h-16 bg-white rounded-full border-4 border-gray-200 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group active:scale-95"
                     >
                       <div className="w-12 h-12 bg-white rounded-full border-2 border-gray-300 group-active:bg-gray-100 transition-colors"></div>
+                    </button>
+                    <button
+                      onClick={switchCamera}
+                      disabled={isLoadingCamera}
+                      className="px-6 py-3 backdrop-blur-sm text-white rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                      style={{ backgroundColor: 'rgba(135, 165, 202, 0.8)' }}
+                      onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'rgba(135, 165, 202, 1)')}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(135, 165, 202, 0.8)'}
+                      title={facingMode === 'user' ? 'Switch to back camera' : 'Switch to front camera'}
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
                     </button>
                   </div>
                 </div>
