@@ -8,6 +8,7 @@ function App() {
   const [error, setError] = useState(null)
   const [streamReady, setStreamReady] = useState(false)
   const [facingMode, setFacingMode] = useState('user') // 'user' for front, 'environment' for back
+  const [selectedFrame, setSelectedFrame] = useState('frame.png') // 'frame.png' or 'frame_2.png'
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
@@ -168,7 +169,7 @@ function App() {
       setCapturedImage(imageDataUrl)
       stopCamera()
     }
-    frameImg.src = '/frame.png'
+    frameImg.src = `/${selectedFrame}`
   }
 
   const retakePhoto = () => {
@@ -234,6 +235,36 @@ function App() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+          {/* Frame Selection */}
+          {!capturedImage && !isCameraOpen && (
+            <div className="p-4 border-b border-gray-200">
+              <p className="text-sm font-semibold text-gray-700 mb-3 text-center">Select Frame:</p>
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => setSelectedFrame('frame.png')}
+                  className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                    selectedFrame === 'frame.png'
+                      ? 'text-white shadow-lg'
+                      : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
+                  }`}
+                  style={selectedFrame === 'frame.png' ? { backgroundColor: '#87a5ca' } : {}}
+                >
+                  Frame 1
+                </button>
+                <button
+                  onClick={() => setSelectedFrame('frame_2.png')}
+                  className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                    selectedFrame === 'frame_2.png'
+                      ? 'text-white shadow-lg'
+                      : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
+                  }`}
+                  style={selectedFrame === 'frame_2.png' ? { backgroundColor: '#87a5ca' } : {}}
+                >
+                  Frame 2
+                </button>
+              </div>
+            </div>
+          )}
           {/* Camera View */}
           {!capturedImage && (
             <div className="relative">
@@ -266,6 +297,33 @@ function App() {
                     <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-white opacity-70"></div>
                     <div className="absolute bottom-20 left-4 w-8 h-8 border-b-2 border-l-2 border-white opacity-70"></div>
                     <div className="absolute bottom-20 right-4 w-8 h-8 border-b-2 border-r-2 border-white opacity-70"></div>
+                  </div>
+                  {/* Frame selector when camera is open */}
+                  <div className="absolute top-4 left-0 right-0 flex justify-center px-4 z-20">
+                    <div className="flex gap-2 bg-black bg-opacity-50 backdrop-blur-sm rounded-full px-2 py-1">
+                      <button
+                        onClick={() => setSelectedFrame('frame.png')}
+                        className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                          selectedFrame === 'frame.png'
+                            ? 'text-white'
+                            : 'text-gray-300 hover:text-white'
+                        }`}
+                        style={selectedFrame === 'frame.png' ? { backgroundColor: 'rgba(135, 165, 202, 0.9)' } : {}}
+                      >
+                        Frame 1
+                      </button>
+                      <button
+                        onClick={() => setSelectedFrame('frame_2.png')}
+                        className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                          selectedFrame === 'frame_2.png'
+                            ? 'text-white'
+                            : 'text-gray-300 hover:text-white'
+                        }`}
+                        style={selectedFrame === 'frame_2.png' ? { backgroundColor: 'rgba(135, 165, 202, 0.9)' } : {}}
+                      >
+                        Frame 2
+                      </button>
+                    </div>
                   </div>
                   <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4 px-4 z-20">
                     <button
