@@ -207,7 +207,7 @@ function App() {
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.download = `world-diabetes-day-${Date.now()}.png`
+        link.download = `world-kidney-day-${Date.now()}.png`
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
@@ -227,10 +227,10 @@ function App() {
   }, [])
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#87a5ca' }}>
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#f28791' }}>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2" style={{ color: '#ffffff' }}>World Diabetes Day</h1>
+          <h1 className="text-4xl font-bold mb-2" style={{ color: '#ffffff' }}>World Kidney Day</h1>
           <p style={{ color: '#ffffff' }}>Take a selfie with our frame</p>
         </div>
 
@@ -272,9 +272,9 @@ function App() {
                     <button
                       onClick={stopCamera}
                       className="px-6 py-3 backdrop-blur-sm text-white rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
-                      style={{ backgroundColor: 'rgba(135, 165, 202, 0.8)' }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(135, 165, 202, 1)'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(135, 165, 202, 0.8)'}
+                      style={{ backgroundColor: 'rgba(242, 135, 145, 0.8)' }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(242, 135, 145, 1)'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(242, 135, 145, 0.8)'}
                     >
                       Cancel
                     </button>
@@ -288,9 +288,9 @@ function App() {
                       onClick={switchCamera}
                       disabled={isLoadingCamera}
                       className="px-6 py-3 backdrop-blur-sm text-white rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                      style={{ backgroundColor: 'rgba(135, 165, 202, 0.8)' }}
-                      onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'rgba(135, 165, 202, 1)')}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(135, 165, 202, 0.8)'}
+                      style={{ backgroundColor: 'rgba(242, 135, 145, 0.8)' }}
+                      onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = 'rgba(242, 135, 145, 1)')}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(242, 135, 145, 0.8)'}
                       title={facingMode === 'user' ? 'Switch to back camera' : 'Switch to front camera'}
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,16 +304,16 @@ function App() {
                   <div className="text-center p-8 w-full">
                     {error ? (
                       <div className="mb-6">
-                        <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#cd473f' }}>
+                        <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: '#f28791' }}>
                           <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
-                        <p className="text-sm mb-4 px-4" style={{ color: '#cd473f' }}>{error}</p>
+                        <p className="text-sm mb-4 px-4" style={{ color: '#e06b77' }}>{error}</p>
                         <button
                           onClick={startCamera}
                           className="px-6 py-3 text-white rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
-                          style={{ backgroundColor: '#cd473f' }}
+                          style={{ backgroundColor: '#f28791' }}
                           onMouseEnter={(e) => e.target.style.opacity = '0.9'}
                           onMouseLeave={(e) => e.target.style.opacity = '1'}
                         >
@@ -322,7 +322,7 @@ function App() {
                       </div>
                     ) : (
                       <>
-                        <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg" style={{ backgroundColor: '#cd473f' }}>
+                        <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg" style={{ backgroundColor: '#f28791' }}>
                           {isLoadingCamera ? (
                             <svg className="animate-spin h-12 w-12 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -339,7 +339,7 @@ function App() {
                           onClick={startCamera}
                           disabled={isLoadingCamera}
                           className="px-8 py-4 text-white rounded-full font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                          style={{ backgroundColor: '#cd473f' }}
+                          style={{ backgroundColor: '#f28791' }}
                           onMouseEnter={(e) => !e.target.disabled && (e.target.style.opacity = '0.9')}
                           onMouseLeave={(e) => e.target.style.opacity = '1'}
                         >
@@ -367,7 +367,7 @@ function App() {
                 <button
                   onClick={retakePhoto}
                   className="px-6 py-3 text-white rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
-                  style={{ backgroundColor: '#87a5ca' }}
+                  style={{ backgroundColor: '#f28791' }}
                   onMouseEnter={(e) => e.target.style.opacity = '0.9'}
                   onMouseLeave={(e) => e.target.style.opacity = '1'}
                 >
@@ -377,7 +377,7 @@ function App() {
                   onClick={downloadImage}
                   disabled={isProcessing}
                   className="px-6 py-3 text-white rounded-full font-semibold transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                  style={{ backgroundColor: '#cd473f' }}
+                  style={{ backgroundColor: '#f28791' }}
                   onMouseEnter={(e) => !e.target.disabled && (e.target.style.opacity = '0.9')}
                   onMouseLeave={(e) => e.target.style.opacity = '1'}
                 >
