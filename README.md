@@ -1,6 +1,6 @@
-# Web Filter - World Kidney Day
+# Web Filter - Marketing Campaign App
 
-A React application with Tailwind CSS for capturing selfies with a frame overlay for the World Kidney Day campaign. Color palette: **#f28791**.
+A React application with Tailwind CSS for capturing selfies with a frame overlay for marketing campaigns.
 
 ## Features
 
